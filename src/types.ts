@@ -14,15 +14,15 @@ export type TemplateRemoval = {
   relativePath: string;
 };
 
-export type SettingsRewrite = {
+export type FileRewrite = {
   absolutePath: string;
   relativePath: string;
-  content: JsonObject;
+  content: string;
 };
 
 export type CleanupPlan = {
   themePath: string;
   templateRemovals: TemplateRemoval[];
-  settingsRewrite: SettingsRewrite | null;
+  fileRewrites: FileRewrite[];
   warnings: string[];
 };

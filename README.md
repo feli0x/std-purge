@@ -2,21 +2,22 @@
 
 `std-purge` is a tiny CLI for clearing up STDs: Shopify Template Debris.
 
-It aggressively cleans generated Shopify theme JSON templates and resets theme settings from schema defaults, because untreated STDs can spread across branches, reviews, and eventually your dignity.
+It aggressively cleans generated Shopify theme JSON templates and sets up a valid starter page, because untreated STDs can spread across branches, reviews, and eventually your dignity.
 
 ## What It Does
 
 - Deletes non-core JSON templates under `templates/**/*.json`
 - Keeps Shopify's core storefront templates
 - Keeps `templates/customers/*.json`
-- Leaves `.liquid` files and `sections/**/*.json` alone
-- Rebuilds `config/settings_data.json` from `config/settings_schema.json`
+- Leaves existing `.liquid` templates and custom sections alone
+- Writes `sections/hello-world.liquid` and `templates/index.json` as a valid starter page
+- Leaves `config/settings_schema.json` and `config/settings_data.json` alone
 - Lets you preserve specific templates when the test comes back negative
 
 ## What It Does Not Do
 
 - Diagnose your real problems
-- Touch `.liquid` files
+- Delete `.liquid` files
 - Clean your Shopify admin
 - Make your theme good, only less contagious
 

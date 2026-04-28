@@ -12,6 +12,6 @@ describe("renderHelp", () => {
     expect(help).toContain("--json");
     expect(help).toContain("--keep-template <name>");
     expect(help).toContain("-h, --help");
-    expect(help).toContain("never touches .liquid files");
+    expect(help).toContain("sections/hello-world.liquid");
   });
 });

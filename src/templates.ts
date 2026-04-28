@@ -3,6 +3,7 @@ import { TemplateRemoval } from "./types.js";
 import { toRelativePath } from "./files.js";
 
 const CORE_TEMPLATE_NAMES = new Set([
+  "404",
   "index",
   "product",
   "collection",

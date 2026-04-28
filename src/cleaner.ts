@@ -1,8 +1,8 @@
-import { unlink, writeFile } from "node:fs/promises";
+import { mkdir, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { CleanupPlan, CliOptions } from "./types.js";
-import { assertDirectory, findFiles, formatJson } from "./files.js";
-import { buildSettingsRewrite } from "./settings.js";
+import { assertDirectory, findFiles } from "./files.js";
+import { buildDefaultThemeRewrites } from "./default-theme.js";
 import { findTemplateRemovals } from "./templates.js";
 
 export async function createCleanupPlan(options: CliOptions): Promise<CleanupPlan> {
@@ -17,7 +17,7 @@ export async function createCleanupPlan(options: CliOptions): Promise<CleanupPla
   return {
     themePath,
     templateRemovals: findTemplateRemovals(themePath, allFiles, options.keepTemplates),
-    settingsRewrite: await buildSettingsRewrite(themePath),
+    fileRewrites: buildDefaultThemeRewrites(themePath, allFiles),
     warnings: []
   };
 }
@@ -27,7 +27,8 @@ export async function applyCleanupPlan(plan: CleanupPlan): Promise<void> {
     await unlink(removal.absolutePath);
   }
 
-  if (plan.settingsRewrite) {
-    await writeFile(plan.settingsRewrite.absolutePath, formatJson(plan.settingsRewrite.content));
+  for (const rewrite of plan.fileRewrites) {
+    await mkdir(path.dirname(rewrite.absolutePath), { recursive: true });
+    await writeFile(rewrite.absolutePath, rewrite.content);
   }
 }

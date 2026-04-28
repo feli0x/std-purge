@@ -9,8 +9,8 @@ export function renderTextReport(plan: CleanupPlan, dryRun: boolean): string {
   ];
 
   lines.push(...renderTemplateLines(plan));
-  lines.push("", "JSON settings to rewrite:");
-  lines.push(plan.settingsRewrite ? `  ${plan.settingsRewrite.relativePath}` : "  none");
+  lines.push("", "Files to rewrite:");
+  lines.push(...renderRewriteLines(plan));
 
   return lines.join("\n");
 }
@@ -21,12 +21,20 @@ export function renderJsonReport(plan: CleanupPlan, dryRun: boolean): string {
       themePath: plan.themePath,
       dryRun,
       templateRemovals: plan.templateRemovals.map((removal) => removal.relativePath),
-      settingsRewrite: plan.settingsRewrite?.relativePath ?? null,
+      fileRewrites: plan.fileRewrites.map((rewrite) => rewrite.relativePath),
       warnings: plan.warnings
     },
     null,
     2
   );
+}
+
+function renderRewriteLines(plan: CleanupPlan): string[] {
+  if (plan.fileRewrites.length === 0) {
+    return ["  none"];
+  }
+
+  return plan.fileRewrites.map((rewrite) => `  ${rewrite.relativePath}`);
 }
 
 function renderTemplateLines(plan: CleanupPlan): string[] {

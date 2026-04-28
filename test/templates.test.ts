@@ -6,6 +6,7 @@ describe("findTemplateRemovals", () => {
   it("removes non-core template JSON files and keeps core templates", () => {
     const themePath = "/theme";
     const files = [
+      "/theme/templates/404.json",
       "/theme/templates/index.json",
       "/theme/templates/product.json",
       "/theme/templates/product.alternate.json",

@@ -1,11 +1,11 @@
 export function renderHelp(): string {
   return [
-    "shopify-theme-clean",
+    "std-purge",
     "",
-    "Aggressively cleans Shopify theme JSON templates and settings.",
+    "Aggressively cleans Shopify theme JSON templates.",
     "",
     "Usage:",
-    "  shopify-theme-clean [options]",
+    "  std-purge [options]",
     "",
     "Options:",
     "  --path <dir>              Theme directory to clean. Defaults to the current directory.",
@@ -18,12 +18,13 @@ export function renderHelp(): string {
     "Behavior:",
     "  Deletes non-core JSON files under templates/**/*.json.",
     "  Keeps core storefront templates and templates/customers/*.json.",
-    "  Skips sections/**/*.json and never touches .liquid files.",
-    "  Rewrites config/settings_data.json from config/settings_schema.json defaults/blanks.",
+    "  Skips existing sections and .liquid templates.",
+    "  Writes sections/hello-world.liquid and templates/index.json as a valid starter page.",
+    "  Leaves config/settings_schema.json and config/settings_data.json alone.",
     "",
     "Examples:",
-    "  shopify-theme-clean --path ./theme --dry-run",
-    "  shopify-theme-clean --path ./theme --yes",
-    "  shopify-theme-clean --path ./theme --keep-template page.about"
+    "  std-purge --path ./theme --dry-run",
+    "  std-purge --path ./theme --yes",
+    "  std-purge --path ./theme --keep-template page.about"
   ].join("\n");
 }
