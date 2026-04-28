@@ -1,0 +1,29 @@
+{
+  "name": "std-purge",
+  "version": "0.1.0",
+  "description": "A CLI for aggressively cleaning Shopify theme JSON templates and settings.",
+  "type": "module",
+  "bin": {
+    "std-purge": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --exclude 'dist/**'"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20.10"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@types/node": "^24.10.1",
+    "eslint": "^9.39.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.3",
+    "vitest": "^4.0.8"
+  }
+}
