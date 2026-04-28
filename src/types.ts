@@ -18,6 +18,7 @@ export type FileRewrite = {
   absolutePath: string;
   relativePath: string;
   content: string;
+  isNew: boolean;
 };
 
 export type CleanupPlan = {
@@ -25,4 +26,27 @@ export type CleanupPlan = {
   templateRemovals: TemplateRemoval[];
   fileRewrites: FileRewrite[];
   warnings: string[];
+};
+
+export type ThemeCheckConfig = {
+  extends: string;
+  enabledChecks: number;
+};
+
+export type ThemeCheckOffense = {
+  check: string;
+  severity: string;
+  start_row: number;
+  start_column: number;
+  end_row: number;
+  end_column: number;
+  message: string;
+};
+
+export type ThemeCheckFileResult = {
+  path: string;
+  offenses: ThemeCheckOffense[];
+  errorCount: number;
+  warningCount: number;
+  infoCount: number;
 };

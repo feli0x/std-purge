@@ -41,7 +41,9 @@ async function findEntryFiles(
 
 export async function readJsonFile(filePath: string): Promise<unknown> {
   try {
-    return JSON.parse(await readFile(filePath, "utf8")) as unknown;
+    const raw = await readFile(filePath, "utf8");
+    const stripped = raw.replace(/^\s*\/\*[\s\S]*?\*\/\s*/, "");
+    return JSON.parse(stripped) as unknown;
   } catch (error) {
     if (error instanceof SyntaxError) {
       throw new CliError(`Malformed JSON: ${filePath}`);

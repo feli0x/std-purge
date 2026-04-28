@@ -3,7 +3,7 @@ import path from "node:path";
 import { CleanupPlan, CliOptions } from "./types.js";
 import { assertDirectory, findFiles } from "./files.js";
 import { buildDefaultThemeRewrites } from "./default-theme.js";
-import { findTemplateRemovals } from "./templates.js";
+import { findTemplateRemovals, buildCoreTemplateRewrites } from "./templates.js";
 
 export async function createCleanupPlan(options: CliOptions): Promise<CleanupPlan> {
   const themePath = path.resolve(options.themePath);
@@ -14,10 +14,12 @@ export async function createCleanupPlan(options: CliOptions): Promise<CleanupPla
 
   const allFiles = await findFiles(themePath);
 
+  const coreTemplateRewrites = await buildCoreTemplateRewrites(themePath, allFiles);
+
   return {
     themePath,
     templateRemovals: findTemplateRemovals(themePath, allFiles, options.keepTemplates),
-    fileRewrites: buildDefaultThemeRewrites(themePath, allFiles),
+    fileRewrites: [...buildDefaultThemeRewrites(themePath, allFiles), ...coreTemplateRewrites],
     warnings: []
   };
 }

@@ -33,7 +33,6 @@ describe("cleaner", () => {
       "templates/product.alt.json"
     ]);
     expect(plan.fileRewrites.map((rewrite) => rewrite.relativePath)).toEqual([
-      "sections/hello-world.liquid",
       "templates/index.json"
     ]);
 
@@ -42,27 +41,33 @@ describe("cleaner", () => {
     await expect(readFile(path.join(themePath, "templates", "product.alt.json"))).rejects.toThrow();
     await expect(readFile(path.join(themePath, "templates", "product.alt.liquid"))).resolves.toBeDefined();
     await expect(readFile(path.join(themePath, "sections", "custom.json"))).resolves.toBeDefined();
-    await expect(readFile(path.join(themePath, "sections", "hello-world.liquid"), "utf8")).resolves.toContain(
-      "Hello world"
-    );
     await expect(readJson(path.join(themePath, "templates", "index.json"))).resolves.toEqual({
       sections: {
-        hello_world: {
-          type: "hello-world",
+        custom_liquid: {
+          type: "custom-liquid",
           settings: {}
         }
       },
-      order: ["hello_world"]
+      order: ["custom_liquid"]
     });
     await expect(readJson(path.join(themePath, "config", "settings_schema.json"))).resolves.toEqual(settingsSchema);
     await expect(readJson(path.join(themePath, "config", "settings_data.json"))).resolves.toEqual(settingsData);
   });
 
-  it("does not overwrite an existing hello-world section", async () => {
+  it("strips multi-section core templates to their first section", async () => {
     const themePath = await createThemeFixture();
-    const existingSection = "<section>Existing hello</section>\n";
     await writeJson(path.join(themePath, "templates", "index.json"), {});
-    await writeFile(path.join(themePath, "sections", "hello-world.liquid"), existingSection);
+    await writeJson(path.join(themePath, "templates", "product.json"), {
+      sections: {
+        main: { type: "main-product", settings: {} },
+        recs: { type: "product-recommendations", settings: {} }
+      },
+      order: ["main", "recs"]
+    });
+    await writeJson(path.join(themePath, "templates", "collection.json"), {
+      sections: { main: { type: "main-collection", settings: {} } },
+      order: ["main"]
+    });
     await writeJson(path.join(themePath, "config", "settings_schema.json"), []);
     await writeJson(path.join(themePath, "config", "settings_data.json"), { current: {} });
 
@@ -75,16 +80,21 @@ describe("cleaner", () => {
       keepTemplates: []
     });
 
-    expect(plan.fileRewrites.map((rewrite) => rewrite.relativePath)).not.toContain(
-      "sections/hello-world.liquid"
-    );
+    expect(plan.fileRewrites.map((r) => r.relativePath)).toContain("templates/product.json");
+    expect(plan.fileRewrites.map((r) => r.relativePath)).not.toContain("templates/collection.json");
 
     await applyCleanupPlan(plan);
 
-    await expect(readFile(path.join(themePath, "sections", "hello-world.liquid"), "utf8")).resolves.toBe(
-      existingSection
-    );
+    await expect(readJson(path.join(themePath, "templates", "product.json"))).resolves.toEqual({
+      sections: { main: { type: "main-product", settings: {} } },
+      order: ["main"]
+    });
+    await expect(readJson(path.join(themePath, "templates", "collection.json"))).resolves.toEqual({
+      sections: { main: { type: "main-collection", settings: {} } },
+      order: ["main"]
+    });
   });
+
 });
 
 async function createThemeFixture(): Promise<string> {
