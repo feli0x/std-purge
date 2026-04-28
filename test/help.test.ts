@@ -7,11 +7,10 @@ describe("renderHelp", () => {
 
     expect(help).toContain("Usage:");
     expect(help).toContain("--path <dir>");
-    expect(help).toContain("--dry-run");
-    expect(help).toContain("--yes");
+    expect(help).toContain("-d, --dry-run");
+    expect(help).toContain("-w, --write");
     expect(help).toContain("--json");
-    expect(help).toContain("--keep-template <name>");
+    expect(help).toContain("-k, --keep <name>");
     expect(help).toContain("-h, --help");
-    expect(help).toContain("sections/hello-world.liquid");
   });
 });

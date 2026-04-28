@@ -4,7 +4,7 @@ export type CliOptions = {
   themePath: string;
   dryRun: boolean;
   help: boolean;
-  yes: boolean;
+  write: boolean;
   json: boolean;
   keepTemplates: string[];
 };

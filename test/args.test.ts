@@ -12,9 +12,9 @@ describe("parseArgs", () => {
       "--path",
       "./theme",
       "--dry-run",
-      "--yes",
+      "--write",
       "--json",
-      "--keep-template",
+      "--keep",
       "page.about"
     ]);
 
@@ -22,9 +22,17 @@ describe("parseArgs", () => {
       themePath: "./theme",
       dryRun: true,
       help: false,
-      yes: true,
+      write: true,
       json: true,
       keepTemplates: ["page.about"]
     });
+  });
+
+  it("parses shorthands", () => {
+    expect(parseArgs(["-p", "./theme"]).themePath).toBe("./theme");
+    expect(parseArgs(["-d"]).dryRun).toBe(true);
+    expect(parseArgs(["-w"]).write).toBe(true);
+    expect(parseArgs(["-j"]).json).toBe(true);
+    expect(parseArgs(["-k", "page.about"]).keepTemplates).toEqual(["page.about"]);
   });
 });

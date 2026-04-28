@@ -24,7 +24,7 @@ describe("cleaner", () => {
       themePath,
       dryRun: false,
       help: false,
-      yes: true,
+      write: true,
       json: false,
       keepTemplates: []
     });
@@ -75,7 +75,7 @@ describe("cleaner", () => {
       themePath,
       dryRun: false,
       help: false,
-      yes: true,
+      write: true,
       json: false,
       keepTemplates: []
     });

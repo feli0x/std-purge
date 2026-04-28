@@ -6,7 +6,7 @@ export function parseArgs(args: string[]): CliOptions {
     themePath: process.cwd(),
     dryRun: false,
     help: false,
-    yes: false,
+    write: false,
     json: false,
     keepTemplates: []
   };
@@ -21,13 +21,13 @@ export function parseArgs(args: string[]): CliOptions {
 function parseArg(args: string[], index: number, options: CliOptions): number {
   const arg = args[index];
 
-  if (arg === "--path") {
+  if (arg === "--path" || arg === "-p") {
     options.themePath = readValue(args, index, "--path");
     return index + 1;
   }
 
-  if (arg === "--keep-template") {
-    options.keepTemplates.push(readValue(args, index, "--keep-template"));
+  if (arg === "--keep" || arg === "-k") {
+    options.keepTemplates.push(readValue(args, index, "--keep"));
     return index + 1;
   }
 
@@ -41,17 +41,17 @@ function applyBooleanArg(arg: string | undefined, options: CliOptions): void {
     return;
   }
 
-  if (arg === "--dry-run") {
+  if (arg === "--dry-run" || arg === "-d") {
     options.dryRun = true;
     return;
   }
 
-  if (arg === "--yes") {
-    options.yes = true;
+  if (arg === "--write" || arg === "-w") {
+    options.write = true;
     return;
   }
 
-  if (arg === "--json") {
+  if (arg === "--json" || arg === "-j") {
     options.json = true;
     return;
   }

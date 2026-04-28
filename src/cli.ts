@@ -28,7 +28,7 @@ async function main(): Promise<void> {
     return;
   }
 
-  if (!options.yes && !(await confirmCleanup(plan))) {
+  if (!options.write && !(await confirmCleanup(plan))) {
     throw new CliError("Cleanup aborted", 2);
   }
 
