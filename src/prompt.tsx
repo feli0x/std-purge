@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Text, useApp, useInput, render } from "ink";
-import { WarningBanner } from "./warning-banner.js";
+import { WarningBanner, YesNoSelector } from "./warning-banner.js";
 import type { CleanupPlan } from "./types.js";
 
 export async function confirmCleanup(plan: CleanupPlan): Promise<boolean> {
@@ -44,18 +44,7 @@ function ThemeCheckPrompt({ onConfirm }: { onConfirm: (confirmed: boolean) => vo
   return (
     <Box marginTop={1} gap={2}>
       <Text dimColor>Run shopify theme check?</Text>
-      <Box gap={1}>
-        {selected === "no" ? (
-          <Text color="white" backgroundColor="red" bold> ❯ NO </Text>
-        ) : (
-          <Text color="gray">   NO </Text>
-        )}
-        {selected === "yes" ? (
-          <Text color="white" backgroundColor="green" bold> ❯ YES </Text>
-        ) : (
-          <Text color="gray">   YES </Text>
-        )}
-      </Box>
+      <YesNoSelector selected={selected} />
       <Text dimColor>← →  enter</Text>
     </Box>
   );

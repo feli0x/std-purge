@@ -2,20 +2,32 @@ import React, { useEffect } from "react";
 import { Box, Text, useApp, render } from "ink";
 import type { CleanupPlan, ThemeCheckConfig, ThemeCheckFileResult } from "./types.js";
 
-function FileList({ plan }: { plan: CleanupPlan }) {
+function useAutoExit() {
+  const { exit } = useApp();
+  useEffect(() => { exit(); }, [exit]);
+}
+
+async function renderAndWait(element: React.ReactElement): Promise<void> {
+  const { waitUntilExit } = render(element);
+  await waitUntilExit();
+}
+
+export function FileList({ plan, bright = false }: { plan: CleanupPlan; bright?: boolean }) {
   const deletions = plan.templateRemovals.length;
   const rewrites = plan.fileRewrites.filter((r) => !r.isNew);
   const creates = plan.fileRewrites.filter((r) => r.isNew);
+  const L = (s: string) => bright ? <Text color="white">{s}</Text> : <Text dimColor>{s}</Text>;
+  const I = (s: string) => bright ? <Text color="white">{s}</Text> : <Text>{s}</Text>;
 
   return (
     <Box flexDirection="column">
       <Box marginBottom={1}>
-        <Text dimColor>Theme  </Text>
+        {L("Theme  ")}
         <Text color="cyan">{plan.themePath}</Text>
       </Box>
 
       <Box>
-        <Text dimColor>Delete  </Text>
+        {L("Delete  ")}
         {deletions === 0 ? (
           <Text dimColor>none</Text>
         ) : (
@@ -25,12 +37,12 @@ function FileList({ plan }: { plan: CleanupPlan }) {
       {plan.templateRemovals.map((r) => (
         <Box key={r.absolutePath} marginLeft={2}>
           <Text color="red">✕  </Text>
-          <Text>{r.relativePath}</Text>
+          {I(r.relativePath)}
         </Box>
       ))}
 
       <Box marginTop={1}>
-        <Text dimColor>Rewrite </Text>
+        {L("Rewrite ")}
         {rewrites.length === 0 ? (
           <Text dimColor>none</Text>
         ) : (
@@ -40,20 +52,20 @@ function FileList({ plan }: { plan: CleanupPlan }) {
       {rewrites.map((r) => (
         <Box key={r.absolutePath} marginLeft={2}>
           <Text color="yellow">↻  </Text>
-          <Text>{r.relativePath}</Text>
+          {I(r.relativePath)}
         </Box>
       ))}
 
       {creates.length > 0 && (
         <>
           <Box marginTop={1}>
-            <Text dimColor>Create  </Text>
+            {L("Create  ")}
             <Text color="green" bold>{String(creates.length)} file{creates.length !== 1 ? "s" : ""}</Text>
           </Box>
           {creates.map((r) => (
             <Box key={r.absolutePath} marginLeft={2}>
               <Text color="green">+  </Text>
-              <Text>{r.relativePath}</Text>
+              {I(r.relativePath)}
             </Box>
           ))}
         </>
@@ -74,8 +86,7 @@ function FileList({ plan }: { plan: CleanupPlan }) {
 }
 
 function DryRunReportComponent({ plan }: { plan: CleanupPlan }) {
-  const { exit } = useApp();
-  useEffect(() => { exit(); }, [exit]);
+  useAutoExit();
 
   return (
     <Box flexDirection="column" marginTop={1} marginBottom={1}>
@@ -103,8 +114,7 @@ function DryRunReportComponent({ plan }: { plan: CleanupPlan }) {
 }
 
 function SuccessReportComponent({ plan }: { plan: CleanupPlan }) {
-  const { exit } = useApp();
-  useEffect(() => { exit(); }, [exit]);
+  useAutoExit();
 
   const deletions = plan.templateRemovals.length;
   const rewrites = plan.fileRewrites.length;
@@ -138,22 +148,15 @@ function SuccessReportComponent({ plan }: { plan: CleanupPlan }) {
 }
 
 export async function renderDryRun(plan: CleanupPlan): Promise<void> {
-  const { waitUntilExit } = render(
-    React.createElement(DryRunReportComponent, { plan })
-  );
-  await waitUntilExit();
+  await renderAndWait(React.createElement(DryRunReportComponent, { plan }));
 }
 
 export async function renderSuccess(plan: CleanupPlan): Promise<void> {
-  const { waitUntilExit } = render(
-    React.createElement(SuccessReportComponent, { plan })
-  );
-  await waitUntilExit();
+  await renderAndWait(React.createElement(SuccessReportComponent, { plan }));
 }
 
 function ThemeCheckBannerComponent({ themePath, config }: { themePath: string; config: ThemeCheckConfig }) {
-  const { exit } = useApp();
-  useEffect(() => { exit(); }, [exit]);
+  useAutoExit();
 
   const configLabel = config.extends
     ? `${config.extends} · ${config.enabledChecks} checks enabled`
@@ -192,10 +195,7 @@ function ThemeCheckBannerComponent({ themePath, config }: { themePath: string; c
 }
 
 export async function renderThemeCheckBanner(themePath: string, config: ThemeCheckConfig): Promise<void> {
-  const { waitUntilExit } = render(
-    React.createElement(ThemeCheckBannerComponent, { themePath, config })
-  );
-  await waitUntilExit();
+  await renderAndWait(React.createElement(ThemeCheckBannerComponent, { themePath, config }));
 }
 
 type CheckCount = { check: string; count: number };
@@ -228,8 +228,7 @@ function severityColor(severity: string): "red" | "yellow" | "blue" {
 }
 
 function ThemeCheckResultsComponent({ results }: { results: ThemeCheckFileResult[] }) {
-  const { exit } = useApp();
-  useEffect(() => { exit(); }, [exit]);
+  useAutoExit();
 
   const groups = groupBySeverity(results);
   const errorTotal = groups.find((g) => g.severity === "error")?.total ?? 0;
@@ -268,7 +267,7 @@ function ThemeCheckResultsComponent({ results }: { results: ThemeCheckFileResult
             </Box>
 
             {groups.map((group, i) => (
-              <Box key={group.severity} flexDirection="column" marginTop={i > 0 ? 1 : 0}>
+              <Box key={group.severity} flexDirection="column" marginTop={i > 0 ? 1 : undefined}>
                 <Text color={severityColor(group.severity)} bold>{group.severity}s</Text>
                 {group.checks.map(({ check, count }) => (
                   <Box key={check} marginLeft={2}>
@@ -292,8 +291,5 @@ function ThemeCheckResultsComponent({ results }: { results: ThemeCheckFileResult
 }
 
 export async function renderThemeCheckResults(results: ThemeCheckFileResult[]): Promise<void> {
-  const { waitUntilExit } = render(
-    React.createElement(ThemeCheckResultsComponent, { results })
-  );
-  await waitUntilExit();
+  await renderAndWait(React.createElement(ThemeCheckResultsComponent, { results }));
 }
