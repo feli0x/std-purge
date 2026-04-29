@@ -2,21 +2,45 @@
   "name": "std-purge",
   "version": "0.1.0",
   "description": "A CLI for aggressively cleaning Shopify theme JSON templates and settings.",
-  "type": "module",
-  "bin": {
-    "std-purge": "./dist/cli.js"
+  "keywords": [
+    "shopify",
+    "theme",
+    "dev",
+    "template",
+    "purge"
+  ],
+  "homepage": "https://github.com/feli0x/std-purge#readme",
+  "bugs": {
+    "url": "https://github.com/feli0x/std-purge/issues"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/feli0x/std-purge.git"
+  },
+  "license": "MIT",
+  "author": "Felix Swinkels",
+  "type": "module",
+  "main": "dist/cli.js",
+  "types": "./dist/cli.d.ts",
+  "bin": {
+    "std-purge": "dist/cli.js"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "lint": "eslint .",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run --exclude 'dist/**'"
   },
-  "files": [
-    "dist"
-  ],
-  "engines": {
-    "node": ">=20.10"
+  "dependencies": {
+    "figlet": "^1.11.0",
+    "ink": "^7.0.1",
+    "react": "^19.2.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
@@ -28,9 +52,7 @@
     "typescript-eslint": "^8.46.3",
     "vitest": "^4.0.8"
   },
-  "dependencies": {
-    "figlet": "^1.11.0",
-    "ink": "^7.0.1",
-    "react": "^19.2.5"
+  "engines": {
+    "node": ">=20.10"
   }
 }

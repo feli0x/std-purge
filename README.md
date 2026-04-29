@@ -10,7 +10,7 @@ It aggressively cleans generated Shopify theme JSON templates and sets up a vali
 - Keeps Shopify's core storefront templates
 - Keeps `templates/customers/*.json`
 - Leaves existing `.liquid` templates and custom sections alone
-- Writes `sections/hello-world.liquid` and `templates/index.json` as a valid starter page
+- Rewrites `templates/index.json` as a valid starter page using the built-in `custom-liquid` section
 - Leaves `config/settings_schema.json` and `config/settings_data.json` alone
 - Lets you preserve specific templates when the test comes back negative
 
@@ -26,44 +26,44 @@ It aggressively cleans generated Shopify theme JSON templates and sets up a vali
 Get tested first:
 
 ```sh
-std-purge --path ./theme --dry-run
+npx std-purge --path ./theme --dry-run
 ```
 
 Start treatment:
 
 ```sh
-std-purge --path ./theme --yes
+npx std-purge --path ./theme --write
 ```
 
 Keep one template in quarantine:
 
 ```sh
-std-purge --path ./theme --keep-template page.about --yes
+npx std-purge --path ./theme --keep page.about --write
 ```
 
 Print lab results for scripts:
 
 ```sh
-std-purge --path ./theme --dry-run --json
+npx std-purge --path ./theme --dry-run --json
 ```
 
 ## Options
 
 ```text
---path <dir>              Theme directory to clean. Defaults to the current directory.
---dry-run                 Print planned changes without writing files.
---yes                     Apply changes without interactive confirmation.
---json                    Print the cleanup report as JSON.
---keep-template <name>    Preserve an extra template JSON file. Repeat as needed.
--h, --help                Show help.
+-p, --path <dir>      Theme directory to clean. Defaults to the current directory.
+-d, --dry-run         Print planned changes without writing files.
+-w, --write           Apply changes without interactive confirmation.
+-j, --json            Print the cleanup report as JSON.
+-k, --keep <name>     Preserve an extra template JSON file. Repeat as needed.
+-h, --help            Show help.
 ```
 
 ## Recommended Ritual
 
 1. Commit or stash your work.
-2. Run `std-purge --path ./theme --dry-run`.
+2. Run `npx std-purge --path ./theme --dry-run`.
 3. Read the report like a responsible adult who definitely knows where those templates came from.
-4. Run `std-purge --path ./theme --yes`.
+4. Run `npx std-purge --path ./theme --write`.
 5. Tell your theme it is clean now, but should still make better choices.
 
 ## Why
